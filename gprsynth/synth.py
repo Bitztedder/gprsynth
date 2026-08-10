@@ -36,7 +36,20 @@ def _place(sec, x_axis_m, x0_m, depth_m, amp, polarity, spec, w, wpk, decay_m=0.
 
 
 def _label_box(x0_tr, depth_m, width_m, extra, spec, wlen):
-    """Box that actually contains the visible hyperbola, not just the apex."""
+    """Box round the apex and the first `cut` samples of the limbs.
+
+    NOT the full extent of the visible hyperbola. A limb asymptotes and stays
+    faintly visible for as long as the section is wide, so "everything you can
+    see" is not a box anyone can draw — for a loud shallow target it would be
+    the whole tile. The convention here is apex-plus-a-fixed-slice, which is
+    what hyperbola detectors are normally trained against.
+
+    Two consequences to know about. Limbs extend outside the box, so a detector
+    trained here learns the apex signature and not the full V. And `cut` is a
+    constant, decided ahead of time — unlike the visible/not-visible decision in
+    generate(), which is measured off the rendered section. If you want boxes
+    that track what survives display processing, this is the function to change.
+    """
     s0 = spec.sample_of_depth(depth_m)
     cut = 18  # how many samples of the limbs we consider part of the object
     v, dt = spec.velocity_m_per_ns, spec.dt_ns
