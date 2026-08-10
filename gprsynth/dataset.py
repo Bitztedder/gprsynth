@@ -99,6 +99,8 @@ def make(out_dir, *, n_surveys=20, ntrace=1024, seed=0, spec=None,
             progress(sid + 1, n_surveys)
 
     with open(os.path.join(out_dir, "data.yaml"), "w") as f:
-        f.write(f"path: {os.path.abspath(out_dir)}\ntrain: images/train\nval: images/val\n"
+        # Relative path, not absolute. An absolute path leaks the machine it was built
+        # on and breaks for everyone who downloads it.
+        f.write("path: .\ntrain: images/train\nval: images/val\n"
                 f"nc: {len(CLASSES)}\nnames: {CLASSES}\n")
     return stat
