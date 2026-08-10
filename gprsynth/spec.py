@@ -1,8 +1,11 @@
-"""Acquisition spec — numbers measured from a real multi-channel GPR survey.
+"""Acquisition spec — the geometry every other module reads.
 
-These are measurements, not authored content: sample interval, channel pitch,
-trace pitch, and depth window of one 24-channel array system. Swap them for your
-own instrument and everything downstream follows.
+Round default numbers for a generic 24-channel road array, not the calibration of
+any particular cart. They are deliberately plain — trace pitch on a real system is
+an odometer constant with several decimals behind it, and shipping one survey's
+calibration as a default would say more about that survey than about the model.
+Nothing here depends on the exact values: replace them with your instrument's and
+everything downstream follows.
 """
 from dataclasses import dataclass
 
@@ -13,7 +16,7 @@ class Spec:
     nchannel: int = 24          # cross-track channels
     dt_ns: float = 0.150        # sample interval [ns]
     d_channel_m: float = 0.080  # channel pitch [m]
-    d_trace_m: float = 0.050  # along-track trace pitch [m]
+    d_trace_m: float = 0.050    # along-track trace pitch [m]
     max_depth_m: float = 2.0    # depth window [m]
 
     @property
