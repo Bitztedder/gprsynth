@@ -13,6 +13,21 @@ import sys
 from PIL import Image
 
 
+def png_paths(idir):
+    """-> image paths relative to idir, walking subfolders.
+
+    Tiles are sharded into per-survey-range subfolders, so a flat listing would
+    silently see nothing and report a clean run over an empty set.
+    """
+    out = []
+    for dirpath, _, names in os.walk(idir):
+        rel = os.path.relpath(dirpath, idir)
+        for n in names:
+            if n.endswith(".png"):
+                out.append(n if rel == "." else os.path.join(rel, n))
+    return sorted(out)
+
+
 def check(root, classes):
     problems = []
     counts = {"images": 0, "labels": 0, "boxes": 0, "empty": 0}
@@ -23,9 +38,12 @@ def check(root, classes):
         if not os.path.isdir(idir):
             problems.append(f"missing {idir}")
             continue
-        imgs = sorted(f for f in os.listdir(idir) if f.endswith(".png"))
+        imgs = png_paths(idir)
         counts["images"] += len(imgs)
+        if not imgs:
+            problems.append(f"{split}: no images found")
         for f in imgs:
+            # the label mirrors the image path, subfolder included
             lp = os.path.join(ldir, f[:-4] + ".txt")
             if not os.path.exists(lp):
                 problems.append(f"no label for {split}/{f}")
@@ -62,7 +80,9 @@ def check(root, classes):
     # train and val must not share a survey
     def surveys(split):
         d = os.path.join(root, "images", split)
-        return {f.split("_")[0] for f in os.listdir(d)} if os.path.isdir(d) else set()
+        if not os.path.isdir(d):
+            return set()
+        return {os.path.basename(f).split("_")[0] for f in png_paths(d)}
     overlap = surveys("train") & surveys("val")
     if overlap:
         problems.append(f"survey leak between train and val: {sorted(overlap)[:5]}")

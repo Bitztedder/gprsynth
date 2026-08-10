@@ -12,6 +12,19 @@ import numpy as np
 from . import dsp, render, synth, tiles
 from .targets import CLASSES
 
+# Tiles go into per-survey-range subfolders rather than one flat directory.
+# A big dataset otherwise puts tens of thousands of files in one folder, which
+# git hosts refuse outright (the Hugging Face Hub caps a folder at 10k entries)
+# and which makes an ordinary `ls` painful. Sharding by survey, not by running
+# count, keeps every tile of one survey together — the survey is the unit this
+# whole package splits and reasons about, so it stays the unit on disk too.
+SURVEYS_PER_SHARD = 50
+
+
+def shard_of(sid):
+    """-> subfolder name for a survey id, e.g. 137 -> '0100'."""
+    return f"{(sid // SURVEYS_PER_SHARD) * SURVEYS_PER_SHARD:04d}"
+
 
 def random_scene(ntrace, rng, *, density=0.004, classes=CLASSES):
     n = max(1, int(ntrace * density))
@@ -57,6 +70,11 @@ def make(out_dir, *, n_surveys=20, ntrace=1024, seed=0, spec=None,
         cube, boxes = synth.generate(ntrace, scene, seed * 10_000 + sid, spec,
                                      background=background)
         split = "val" if sid in val_ids else "train"
+        shard = shard_of(sid)
+        idir = os.path.join(out_dir, "images", split, shard)
+        ldir = os.path.join(out_dir, "labels", split, shard)
+        os.makedirs(idir, exist_ok=True)
+        os.makedirs(ldir, exist_ok=True)
 
         # Render the long view AT the channel the target sits under. A target is
         # localised across-track, so a random channel would show almost nothing —
@@ -86,8 +104,8 @@ def make(out_dir, *, n_surveys=20, ntrace=1024, seed=0, spec=None,
                     continue                              # keep only some empty ground
                 name = f"s{sid:04d}_c{ch:02d}_{t0}-{t1}"
                 render.to_image(sec[t0:t1], clip=99.0).save(
-                    os.path.join(out_dir, "images", split, name + ".png"))
-                with open(os.path.join(out_dir, "labels", split, name + ".txt"), "w") as f:
+                    os.path.join(idir, name + ".png"))
+                with open(os.path.join(ldir, name + ".txt"), "w") as f:
                     f.write("\n".join(lines))
                 stat["tiles"] += 1
                 stat[split] += 1

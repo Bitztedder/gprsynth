@@ -17,6 +17,13 @@ stat = dataset.make("out", n_surveys=200, ntrace=2048, seed=0)
 # -> images/{train,val}, labels/{train,val} (YOLO format), data.yaml
 ```
 
+Tiles land in subfolders of `SURVEYS_PER_SHARD` surveys each rather than one flat
+directory — tens of thousands of files in a single folder is past what most git hosts
+accept, and past what an ordinary `ls` handles gracefully. Sharding by survey rather
+than by running count keeps every tile of one survey together, which is the unit this
+package splits and reasons about everywhere else. Ultralytics globs recursively and
+mirrors the subpath from `images/` to `labels/`, so nothing downstream changes.
+
 No survey data needed. The background is synthesised.
 
 ---
