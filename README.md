@@ -54,6 +54,24 @@ AGC lift weak returns, so a target that looks negligible in the raw cube can be
 obvious to the detector. Getting this backwards leaves visible hyperbolas
 unlabelled — injected false negatives.
 
+## Measured: surveys come out interchangeable
+
+Train a detector twice on data from here — once with a clean survey-level split, once
+with a deliberately leaky tile-level split — and the leaky run reports a score 0.002
+mAP50 above what it gets on surveys it never saw. The leak buys nothing.
+
+That is a statement about this generator, not about splitting. Leakage pays when there
+is something recording-specific to memorise, and every survey here is drawn from one
+distribution: same clutter statistics, same layering, same wave, only the seed moves.
+Real surveys differ in soil, moisture, pavement and backfill, so a detector trained on
+this data has never had to cope with variation the field will hand it.
+
+The fix is to draw the nuisance parameters once per survey instead of fixing them
+globally — clutter amplitude, layer count and depth, velocity, noise floor. Then each
+survey carries a signature, and the same experiment starts reporting a real gap. That
+is the next thing to change here. Method and numbers:
+[notebook](https://www.kaggle.com/code/bitztedder/leakage-needs-something-to-memorise).
+
 ## Honest status
 
 - **`cavity` and `pipe` are solid.** Geometry and polarity match what a void and a
