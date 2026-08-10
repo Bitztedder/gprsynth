@@ -74,6 +74,11 @@ still there, and teaching "this is background" would inject false negatives.
 and at inference time. Two implementations drift, and the model quietly learns a
 picture the field never shows it.
 
+**Empty ground is a class too.** A share of surveys is generated with nothing buried
+at all (`clean_survey_ratio`). Most real road is empty; a detector that only ever sees
+ground containing something learns to always find something. The default mix lands
+around 30% empty tiles.
+
 ## Bring your own data
 
 ```python
