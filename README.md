@@ -142,6 +142,8 @@ python examples/make_demo.py
 
 ## Related
 
+- Dataset: [Hugging Face](https://huggingface.co/datasets/bitztedder/gpr-synth-v1) · [Kaggle](https://www.kaggle.com/datasets/bitztedder/gpr-synth-v1)
+
 Full-waveform simulation with [gprMax](https://www.gprmax.com/) (GPL-3.0) is a stricter
 alternative to the analytic scatterer model here — slower, and it needs a soil model.
 gprMax is not bundled or required.
