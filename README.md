@@ -110,13 +110,12 @@ around 30% empty tiles.
 dataset.make("out", background=my_cube)     # (ntrace, nchannel, nsample)
 ```
 
-Reading your vendor's format is your problem — this package takes numpy. That keeps
-it vendor-neutral.
+This package takes numpy, so reading your instrument's file format is out of scope.
+That is what keeps it vendor-neutral.
 
 Acquisition constants live in `gprsynth/spec.py`. The defaults describe a generic
 24-channel road array (0.150 ns sampling, 0.080 m channel pitch, 0.050 m trace pitch,
-2 m window) — round numbers for a system of this kind, not any particular cart's
-calibration. Replace them with your instrument's and everything downstream follows.
+2 m window). Set them to your instrument's and everything downstream follows.
 
 ## Verify
 

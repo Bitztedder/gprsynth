@@ -1,9 +1,8 @@
 """Source wavelet.
 
-Default is a Ricker (Mexican-hat) wavelet — the textbook GPR source model. If you
-have a real survey you can estimate the wavelet from it and pass your own array;
-nothing else changes. We ship the parametric one so this package carries no data
-derived from anyone's survey.
+Default is a Ricker (Mexican-hat) wavelet, the textbook GPR source model. It is
+parametric, so the shape follows from peak frequency and sample interval alone.
+Pass your own array instead and nothing else changes.
 """
 import numpy as np
 

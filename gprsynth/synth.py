@@ -65,7 +65,7 @@ def generate(ntrace, scene, seed, spec, *, background=None, wavelet=None,
     -> (cube float32 [ntrace, nchannel, nsample], boxes[(cls, channel, x0, y0, x1, y1)])
 
     background=None  -> synthetic canvas (publishable)
-    background=cube  -> your own recording
+    background=cube  -> a cube you supply
     visible_snr      -> a target is labelled in a channel only if, AFTER display
                         processing, its peak clears this many times the clutter
                         standard deviation. Measured, not predicted.

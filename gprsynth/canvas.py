@@ -4,8 +4,8 @@ Two ways to get one:
 
   synthetic(...)  — built from noise. No survey data involved, so anything you
                     generate with it is yours to publish.
-  from_array(...) — your own recording as a numpy cube. Better texture, but then
-                    the output inherits whatever rights that recording carries.
+  from_array(...) — a numpy cube you supply. The output then carries whatever
+                    rights that array carries.
 
 The synthetic canvas is not a physics simulation of soil. It reproduces the three
 things a detector actually keys on: correlated noise (the ground is not white),
